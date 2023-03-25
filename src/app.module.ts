@@ -7,11 +7,20 @@ import { ProfileModule } from './profile/profile.module';
 import { Profile } from './profile/entitties/profile-entities';
 import { User } from './user/entities/user-entity';
 import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
+      validationSchema: Joi.object({
+        DB_HOST: Joi.string().required(),
+        DB_PORT: Joi.number().required(),
+        DB_USER: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DB_NAME: Joi.string().required(),
+        APP_PORT: Joi.number().required(),
+      })
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
