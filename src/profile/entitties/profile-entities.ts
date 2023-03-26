@@ -7,13 +7,13 @@ export class Profile {
     id: Number;
 
     @Column({ type: String })
-    name: String;
+    name: string;
 
     @Column({ type: String })
-    surname: String;
+    surname: string;
 
     @Column({ type: String })
-    phone: String;
+    phone: string;
 
     @JoinColumn()
     @OneToOne(
