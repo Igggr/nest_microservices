@@ -5,6 +5,7 @@ import { ProfileModule } from './profile/profile.module';
 import { Profile } from './profile/entitties/profile-entities';
 import { User } from './user/entities/user-entity';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -33,6 +34,7 @@ import * as Joi from 'joi';
     }),
     UserModule,
     ProfileModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

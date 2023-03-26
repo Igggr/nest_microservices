@@ -23,7 +23,7 @@ export class User {
     profile: Profile;
 
     async setPassword(password: string, hash: number = 10) {
-        this.password = await bcrypt.hash(password, hash)
+        this.password = await bcrypt.hash(password, hash);
     }
 
     checkPassword(password: string): Promise<boolean> {
