@@ -19,6 +19,7 @@ import * as Joi from 'joi';
         DB_PASSWORD: Joi.string().required(),
         DB_NAME: Joi.string().required(),
         APP_PORT: Joi.number().required(),
+        JWT_SECRET: Joi.string().required(),
       })
     }),
     TypeOrmModule.forRoot({
@@ -34,7 +35,7 @@ import * as Joi from 'joi';
     }),
     UserModule,
     ProfileModule,
-    AuthModule,
+    AuthModule.forRoot(process.env.JWT_SECRET),  // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
   ],
   controllers: [],
   providers: [],

@@ -9,8 +9,7 @@ export class UserService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) { }
-
-
+    
     async hasUserWithEmail(email: string): Promise<boolean> {
         const user = await this.findByEmail(email);
         return user !== null;

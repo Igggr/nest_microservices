@@ -26,7 +26,7 @@ export class User {
         this.password = await bcrypt.hash(password, hash);
     }
 
-    checkPassword(password: string): Promise<boolean> {
-        return bcrypt.compare(password, this.password);
+    async checkPassword(password: string): Promise<boolean> {
+        return await bcrypt.compare(password, this.password);
     }
 } 
