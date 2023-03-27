@@ -7,13 +7,12 @@ import { RegisterDTO } from './dtos/register-dto';
 @Controller('auth')
 export class AuthController {
     constructor(
-        private readonly profile: ProfileService,
         private readonly authService: AuthService,
     ) {}
 
     @Post('/register')
-    async register(@Body() registerDTO: RegisterDTO) {
-        return await this.profile.register(registerDTO);
+    async register(@Body() dto: RegisterDTO) {
+        return await this.authService.register(dto);
     }
 
     @Get('/login')
