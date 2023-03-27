@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from "@nestjs/jwt";
 import { ProfileService } from 'src/profile/profile.service';
+import { RolesService } from 'src/roles/roles.service';
 import { User } from 'src/user/entities/user-entity';
 import { UserService } from 'src/user/user.service';
 import { Connection, Repository } from 'typeorm';
@@ -14,6 +15,7 @@ export class AuthService {
         private readonly jwt: JwtService,
         private readonly userService: UserService,
         private readonly profileService: ProfileService,
+        private readonly roleService: RolesService,
         private readonly connection: Connection,  // транзакции
     ) { }
 
@@ -35,11 +37,14 @@ export class AuthService {
         let user: User;
         
         try {
+            const simpleUserRole = await this.roleService.ensureHasRoleForSimpleUser();
             user = await this.userService.create(dto.login, dto.email, dto.password);
-            await queryRunner.manager.save(user);
-
+            const userRole = this.roleService.assignRoleToUser(user, simpleUserRole)
             const profile = await this.profileService.create(dto.name, dto.surname, dto.phone);
             profile.user = user;
+
+            await queryRunner.manager.save(user);
+            await queryRunner.manager.save(userRole);
             await queryRunner.manager.save(profile);
 
             // транзакция удалась

@@ -6,7 +6,9 @@ import { Profile } from './profile/entitties/profile-entities';
 import { User } from './user/entities/user-entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { RolesModule } from './roles/roles.module';
 import * as Joi from 'joi';
+import { Role } from './roles/entities/role-entity';
 
 @Module({
   imports: [
@@ -29,13 +31,18 @@ import * as Joi from 'joi';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Profile],
+      entities: [
+        User,
+        Profile,
+        Role,
+      ],
       autoLoadEntities: true,
       synchronize: true,  // автоматические миграции
     }),
     UserModule,
     ProfileModule,
-    AuthModule.forRoot(process.env.JWT_SECRET),  // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
+    AuthModule.forRoot(process.env.JWT_SECRET),
+    RolesModule,  // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
   ],
   controllers: [],
   providers: [],
