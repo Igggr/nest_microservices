@@ -20,6 +20,10 @@ export class UserService {
         return user;
     }
     
+    async findAll() {
+        return await this.userRepository.find();
+    }
+
     // создай. но НЕ СОХРАНЯЙ
     async create(login: string, email: string, password: string) {
         const user = this.userRepository.create({ login, email });
