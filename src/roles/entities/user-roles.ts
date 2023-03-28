@@ -18,13 +18,21 @@ export class UserRole {
     @ManyToOne(
         () => User,
         (user) => user.userRoles,
+        {
+            cascade: true,
+            onDelete: 'CASCADE',
+        }
     )
     user: User;
 
     @ManyToOne(
         () => Role,
         (role) => role.userRoles,
-        { eager: true }
+        {
+            eager: true,
+            cascade: true,
+            onDelete: 'CASCADE',
+        }
     )
     role: Role;
 
@@ -35,6 +43,10 @@ export class UserRole {
     @ManyToOne(
         () => User,
         (user) => user.creatures,
+        {
+            cascade: true,
+            onDelete: 'CASCADE',
+         }
     )
     grantedBy: User;  // кто доверил ему банхамер?
 } 

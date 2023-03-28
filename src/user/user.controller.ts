@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user-entity';
 import { UserService } from './user.service';
@@ -15,5 +15,12 @@ export class UserController {
     @Get('')
     getAllUserrs() {
         return this.userService.findAll();
+    }
+    
+    @ApiOperation({ summary: 'Удали пользователя' })
+    @ApiResponse({ status: 200 })
+    @Delete('/:id')
+    deleteUser(@Param('id', ParseIntPipe) id: number) {
+        this.userService.delete(id);
     }
 }

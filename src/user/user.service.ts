@@ -31,6 +31,10 @@ export class UserService {
         return user;
     }
 
+    async delete(id: number) {
+        const res = await this.userRepository.delete(id);
+    }
+
     async getRoles(user: User): Promise<string[]> {
         const userRoles = (await this.userRepository.findOne(
             {

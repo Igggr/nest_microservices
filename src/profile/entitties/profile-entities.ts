@@ -20,11 +20,14 @@ export class Profile {
     @Column({ type: String })
     phone: string;
 
-    @JoinColumn()
+    @JoinColumn() 
     @OneToOne(
         () => User,
         (user) => user.profile,
-        { cascade: true }
+        {
+            cascade: true,
+            onDelete: 'CASCADE'
+        }
     )
     user: User;
 } 

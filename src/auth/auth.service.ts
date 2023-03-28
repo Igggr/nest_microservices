@@ -4,7 +4,7 @@ import { ProfileService } from 'src/profile/profile.service';
 import { RolesService } from 'src/roles/roles.service';
 import { User } from 'src/user/entities/user-entity';
 import { UserService } from 'src/user/user.service';
-import { Connection, Repository } from 'typeorm';
+import { Connection } from 'typeorm';
 import { LoginDTO } from './dtos/login-dto';
 import { RegisterDTO } from './dtos/register-dto';
 
