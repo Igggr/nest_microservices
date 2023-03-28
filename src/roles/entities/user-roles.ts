@@ -24,6 +24,7 @@ export class UserRole {
     @ManyToOne(
         () => Role,
         (role) => role.userRoles,
+        { eager: true }
     )
     role: Role;
 
@@ -35,5 +36,5 @@ export class UserRole {
         () => User,
         (user) => user.creatures,
     )
-    grantedBy: User;
+    grantedBy: User;  // кто доверил ему банхамер?
 } 

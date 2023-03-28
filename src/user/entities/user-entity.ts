@@ -1,8 +1,7 @@
 import { Profile } from "src/profile/entitties/profile-entities";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { ApiProperty } from "@nestjs/swagger";
-import { Role } from "src/roles/entities/role-entity";
 import { UserRole } from "src/roles/entities/user-roles";
 
 @Entity()
@@ -34,11 +33,12 @@ export class User {
         (userRole) => userRole.user,
         { cascade: true }
     )
-    userRoles: Role[];
+    userRoles: UserRole[];  // какие у него самого роли?
 
     @OneToMany(
         () => UserRole,
         (userRole) => userRole.grantedBy,
+        { eager: true }
     )
     creatures: UserRole[];  // кому это он банхамер доверил?     
 

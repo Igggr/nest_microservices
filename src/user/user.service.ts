@@ -30,4 +30,15 @@ export class UserService {
         await user.setPassword(password);
         return user;
     }
+
+    async getRoles(user: User): Promise<string[]> {
+        const userRoles = (await this.userRepository.findOne(
+            {
+                where: { id: Equal(user.id) },
+                relations: { userRoles: true } // нужен еще один запрос в БДб чтобы добраться до ролей
+            })
+        ).userRoles;
+        const roles = userRoles?.map((ur) => ur.role.value) ?? [];
+        return roles;
+    }
 }
