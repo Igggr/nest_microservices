@@ -4,7 +4,8 @@ import { ADMIN, RolesService } from './roles.service';
 import { CreateRoleDTO } from './dtos/role-dto';
 import { Role } from './entities/role-entity';
 import { RoleGuard } from 'src/auth/guards/role/role.guard';
-import { Roles } from 'src/auth/guards/role/roles-auth-decorator';
+import { Roles } from 'src/auth/guards/role/role-checker';
+
 
 @ApiTags('Роли')
 @Controller('roles')
