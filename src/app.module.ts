@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { ProfileModule } from './profile/profile.module';
@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import * as Joi from 'joi';
 import { Role } from './roles/entities/role-entity';
+import { JwtMiddleware } from './auth/jwt/jwt.middleware';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -45,6 +47,13 @@ import { Role } from './roles/entities/role-entity';
     RolesModule,  // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
   ],
   controllers: [],
-  providers: [],
+  providers: [JwtService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL
+    })
+  }
+}
