@@ -13,6 +13,9 @@ import { JwtMiddleware } from './auth/jwt/jwt.middleware';
 import { JwtService } from '@nestjs/jwt';
 import { FileModule } from './file/file.module';
 import { TextBlockModule } from './text-block/text-block.module';
+import { Group } from './text-block/entities/group-entity';
+import { TextBlock } from './text-block/entities/text-block-entity';
+import { BlockGroup } from './text-block/entities/block-group-entity';
 
 @Module({
   imports: [
@@ -39,6 +42,9 @@ import { TextBlockModule } from './text-block/text-block.module';
         User,
         Profile,
         Role,
+        Group,
+        TextBlock,
+        BlockGroup,
       ],
       autoLoadEntities: true,
       synchronize: true,  // автоматические миграции
