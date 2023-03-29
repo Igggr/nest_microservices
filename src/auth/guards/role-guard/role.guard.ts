@@ -10,7 +10,7 @@ export class RoleGuard extends AbstractRoleGuard {
   constructor(reflector: Reflector) { super(reflector) }
 
   check(_, user, requiredRoles: string[]) {
-    return this.checkRole(user, requiredRoles);
+    return this.hasRole(user, requiredRoles);
   }
 
 }

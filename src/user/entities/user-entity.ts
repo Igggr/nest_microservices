@@ -1,8 +1,8 @@
-import { Profile } from "src/profile/entitties/profile-entities";
+import { Profile } from "src/profile/entities/profile-entity";
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { ApiProperty } from "@nestjs/swagger";
-import { UserRole } from "src/roles/entities/user-roles";
+import { UserRole } from "src/roles/entities/user-role-entity";
 import { Length, IsEmail, IsString, IsInt, IsPositive } from 'class-validator';
 
 

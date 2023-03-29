@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ADMIN, RolesService } from './roles.service';
-import { CreateRoleDTO } from './dtos/role-dto';
+import { CreateRoleDTO } from './dtos/create-role-dto';
 import { Role } from './entities/role-entity';
-import { RoleGuard } from 'src/auth/guards/role/role.guard';
-import { Roles } from 'src/auth/guards/role/role-checker';
+import { RoleGuard } from 'src/auth/guards/role-guard/role.guard';
+import { Roles } from 'src/auth/guards/role-guard/role-checker';
 
 
 @ApiTags('Роли')

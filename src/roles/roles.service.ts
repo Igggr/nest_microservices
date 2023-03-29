@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user-entity';
 import { Equal, Repository } from 'typeorm';
-import { CreateRoleDTO } from './dtos/role-dto';
+import { CreateRoleDTO } from './dtos/create-role-dto';
 import { Role } from './entities/role-entity';
-import { UserRole } from './entities/user-roles';
+import { UserRole } from './entities/user-role-entity';
 import { USER } from './roles';
 export { USER, ADMIN } from './roles';
 

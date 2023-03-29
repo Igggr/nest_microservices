@@ -9,7 +9,7 @@ export class SameUserOrHasRoleGuard extends AbstractRoleGuard {
   constructor(reflector: Reflector) { super(reflector) }
 
   check(req, user, requiredRoles: string[]) {
-    return this.sameUser(req, user) || this.checkRole(user, requiredRoles);
+    return this.sameUser(req, user) || this.hasRole(user, requiredRoles);
   }
   
   sameUser(req, user): boolean {

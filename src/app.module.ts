@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { ProfileModule } from './profile/profile.module';
-import { Profile } from './profile/entitties/profile-entities';
+import { Profile } from './profile/entities/profile-entity';
 import { User } from './user/entities/user-entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
