@@ -11,6 +11,7 @@ import * as Joi from 'joi';
 import { Role } from './roles/entities/role-entity';
 import { JwtMiddleware } from './auth/jwt/jwt.middleware';
 import { JwtService } from '@nestjs/jwt';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { JwtService } from '@nestjs/jwt';
     UserModule,
     ProfileModule,
     AuthModule.forRoot(process.env.JWT_SECRET),
-    RolesModule,  // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
+    RolesModule,
+    FileModule,  // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
   ],
   controllers: [],
   providers: [JwtService],
