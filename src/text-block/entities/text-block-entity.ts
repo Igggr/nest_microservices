@@ -33,7 +33,7 @@ export class TextBlock {
 
     @OneToMany(
         () => BlockGroup,
-        (blockgroup) => blockgroup
+        (blockgroup) => blockgroup.block,
     )
     blockGroups: BlockGroup[] 
 

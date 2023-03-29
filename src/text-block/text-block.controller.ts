@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { TextBlockService } from './text-block.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateTextBlockDTO } from './dtos/create-text-block.dto';
+import { TextBlockService } from './services/text-block/text-block.service';
 
 
 @ApiTags('Текстовый блок')
@@ -11,11 +12,14 @@ export class TextBlockController {
         private readonly textBlockService: TextBlockService,
     ) { }
     
+    @UseInterceptors(FileInterceptor('image'))
     @ApiOperation({ summary: 'Создание нового текстового блока' })
     @Post('/')
-    create(@UploadedFile() file) {
-        this.textBlockService.createFile(file);
-        console.log('create text block');
+    async create(
+        @Body() dto: CreateTextBlockDTO,
+        @UploadedFile() image,
+    ) {
+        return await this.textBlockService.create(dto, image);
     }
     
     @ApiOperation({ summary: 'Получение тестовых блоков'})

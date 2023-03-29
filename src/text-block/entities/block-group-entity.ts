@@ -14,10 +14,10 @@ export class BlockGroup {
     id: number;
 
     @Column({ type: Number })
-    groupId: number;
+    blockId: number;
 
     @Column({ type: Number })
-    textBlockId: number;
+    groupId: number;
 
     @ManyToOne(
         () => TextBlock,
@@ -28,7 +28,7 @@ export class BlockGroup {
             cascade: true,
         }
     )
-    textBlock: TextBlock;
+    block: TextBlock;
 
     @ManyToOne(
         () => Group,

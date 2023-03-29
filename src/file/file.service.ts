@@ -26,4 +26,10 @@ export class FileService {
             fs.mkdirSync(direcory, { recursive: true })
         }
     }
+
+    deleteFile(fileName: string) {
+        console.log(`Deleteing ${fileName}`);
+        const filePath = path.resolve(__dirname, '..', '..', 'static', fileName);
+        fs.unlinkSync(filePath);
+    }
 }

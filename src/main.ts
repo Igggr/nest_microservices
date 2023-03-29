@@ -16,7 +16,7 @@ async function bootstrap() {
   const documnet = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, documnet);
 
-  app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(process.env.APP_PORT);
 }
