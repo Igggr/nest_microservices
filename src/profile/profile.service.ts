@@ -1,9 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserService } from 'src/user/user.service';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Profile } from './entitties/profile-entities';
-import { RegisterDTO } from 'src/auth/dtos/register-dto';
 
 
 @Injectable()
