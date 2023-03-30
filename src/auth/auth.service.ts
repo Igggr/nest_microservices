@@ -4,7 +4,7 @@ import { ProfileService } from 'src/profile/profile.service';
 import { RolesService } from 'src/roles/roles.service';
 import { User } from 'src/user/entities/user-entity';
 import { UserService } from 'src/user/user.service';
-import { Connection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { LoginDTO } from './dtos/login-dto';
 import { RegisterDTO } from './dtos/register-dto';
 
@@ -16,7 +16,7 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly profileService: ProfileService,
         private readonly roleService: RolesService,
-        private readonly connection: Connection,  // транзакции
+        private dataSource: DataSource, // транзакции
     ) { }
 
     async login(dto: LoginDTO) {
@@ -31,7 +31,7 @@ export class AuthService {
 
         // нет смысла создать пользователя без профайла - исолзуем транзакцию,
         // чтобы либо создались оба, либо не создалось ничего
-        const queryRunner = this.connection.createQueryRunner();
+        const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
         let user: User;

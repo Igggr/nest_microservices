@@ -4,7 +4,7 @@ import { FileService } from 'src/file/file.service';
 import { CreateTextBlockDTO } from 'src/text-block/dtos/create-text-block.dto';
 import { UpdateTextBlockDTO } from 'src/text-block/dtos/update-text-block.dto';
 import { TextBlock } from 'src/text-block/entities/text-block-entity';
-import { Connection, Equal, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 import { GroupService } from '../group/group.service';
 
 
@@ -13,7 +13,7 @@ export class TextBlockService {
     constructor(
         private readonly fileService: FileService,
         private readonly groupService: GroupService,
-        private readonly connection: Connection,  // транзакции
+        private readonly dataSource: DataSource,  // транзакции
         @InjectRepository(TextBlock)
         private readonly textBlockRepository: Repository<TextBlock>,
     ) { }
@@ -25,7 +25,7 @@ export class TextBlockService {
         const group = await this.groupService.ensureGroup(dto.groupName);
         const textBlock = this.textBlockRepository.create({ title: dto.title, text: dto.text, image: fileName });
 
-        const queryRunner = this.connection.createQueryRunner();
+        const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
@@ -71,7 +71,7 @@ export class TextBlockService {
         if (!block) {
             throw new HttpException(`Блока с id=${id} не существует`, HttpStatus.NOT_FOUND);
         }
-        const queryRunner = this.connection.createQueryRunner();
+        const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
 
