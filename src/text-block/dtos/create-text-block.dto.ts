@@ -1,9 +1,8 @@
-import { PickType } from "@nestjs/mapped-types";
+import { PickType, IntersectionType } from "@nestjs/swagger";
 import { Group } from "../entities/group-entity";
 import { TextBlock } from "../entities/text-block-entity";
 
-export class CreateTextBlockDTO extends PickType(TextBlock, ['title', 'text']) {
-    // как пересечь 2 типа с одинаковым назавнием полей, перименова одно
-    // по норьмальному я не знаю. А так потеряет инфу для swagger
-    groupName: Group['title'];  
-}
+export class CreateTextBlockDTO extends IntersectionType(
+    PickType(TextBlock, ['title', 'text']),
+    PickType(Group, ['groupName']),
+) {}

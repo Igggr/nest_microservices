@@ -11,19 +11,19 @@ export class GroupService {
     ) { }
     
     // Создай, но не сохраняй
-    private createGroup(title: string): Group {
-        const group = this.groupRepository.create({ title });
+    private createGroup(groupName: string): Group {
+        const group = this.groupRepository.create({ groupName });
         return group;
     }
 
-    async ensureGroup(title: string): Promise<Group> {
+    async ensureGroup(groupName: string): Promise<Group> {
         const group = await this.groupRepository.findOne({
-            where: { title: Equal(title) }
+            where: { groupName: Equal(groupName) }
         });
         if (group) {
             return group;
         } else {
-            return this.createGroup(title);
+            return this.createGroup(groupName);
         }
     }
 

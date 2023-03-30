@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/file/file.service';
 import { CreateTextBlockDTO } from 'src/text-block/dtos/create-text-block.dto';
-import { BlockGroup } from 'src/text-block/entities/block-group-entity';
 import { TextBlock } from 'src/text-block/entities/text-block-entity';
 import { Connection, Repository } from 'typeorm';
 import { GroupService } from '../group/group.service';
@@ -16,9 +15,6 @@ export class TextBlockService {
         private readonly connection: Connection,  // транзакции
         @InjectRepository(TextBlock)
         private readonly textBlockRepository: Repository<TextBlock>,
-        @InjectRepository(BlockGroup)
-        private readonly blockGroupRepository: Repository<BlockGroup>,
-
     ) { }
     
     async create(dto: CreateTextBlockDTO, file) {
@@ -36,19 +32,11 @@ export class TextBlockService {
                 console.log('Групппа не существовала. создаем');
                 await queryRunner.manager.save(group);
             }
-            console.log('saved group');
-            console.log(group);
+            textBlock.group = group;
             await queryRunner.manager.save(textBlock);
-            console.log('saved block')
-            console.log(textBlock);
-            
-            const blockgroup = this.blockGroupRepository.create({ block: textBlock, group: group });
-            console.log(blockgroup);
-            await queryRunner.manager.save(blockgroup);
-            console.log('saved relationship');
 
             await queryRunner.commitTransaction();
-            return blockgroup;
+            return textBlock;
         } catch (e) {
             await queryRunner.rollbackTransaction();
             this.fileService.deleteFile(fileName);

@@ -15,7 +15,7 @@ import { FileModule } from './file/file.module';
 import { TextBlockModule } from './text-block/text-block.module';
 import { Group } from './text-block/entities/group-entity';
 import { TextBlock } from './text-block/entities/text-block-entity';
-import { BlockGroup } from './text-block/entities/block-group-entity';
+
 
 @Module({
   imports: [
@@ -44,7 +44,6 @@ import { BlockGroup } from './text-block/entities/block-group-entity';
         Role,
         Group,
         TextBlock,
-        BlockGroup,
       ],
       autoLoadEntities: true,
       synchronize: true,  // автоматические миграции

@@ -1,7 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { IsInt, IsPositive, IsString, Length } from 'class-validator';
 import { ApiProperty } from "@nestjs/swagger";
-import { BlockGroup } from "./block-group-entity";
+import { Group } from "./group-entity";
 
 @Entity()
 export class TextBlock {
@@ -30,11 +30,10 @@ export class TextBlock {
     @Column()
     image: string;
 
-
-    @OneToMany(
-        () => BlockGroup,
-        (blockgroup) => blockgroup.block,
+    @ManyToOne(
+        () => Group,
+        (group) => group.blocks,
     )
-    blockGroups: BlockGroup[] 
+    group: Group;
 
 }

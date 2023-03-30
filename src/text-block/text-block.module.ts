@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FileModule } from 'src/file/file.module';
-import { BlockGroup } from './entities/block-group-entity';
 import { Group } from './entities/group-entity';
 import { TextBlock } from './entities/text-block-entity';
 import { TextBlockController } from './text-block.controller';
@@ -13,7 +12,7 @@ import { GroupService } from './services/group/group.service';
   providers: [TextBlockService, GroupService],
   imports: [
     FileModule,
-    TypeOrmModule.forFeature([Group, TextBlock, BlockGroup]),
+    TypeOrmModule.forFeature([Group, TextBlock]),
   ]
 })
 export class TextBlockModule {}
