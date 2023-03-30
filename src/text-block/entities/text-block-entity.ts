@@ -33,6 +33,10 @@ export class TextBlock {
     @ManyToOne(
         () => Group,
         (group) => group.blocks,
+        {
+            eager: true,
+            onDelete: 'SET NULL'
+        }
     )
     group: Group;
 

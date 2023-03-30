@@ -33,6 +33,7 @@ export class UserService {
 
     async delete(id: number) {
         const res = await this.userRepository.delete(id);
+        return res;
     }
 
     async getRoles(user: User): Promise<string[]> {

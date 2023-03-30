@@ -9,10 +9,9 @@ export class FileService {
     async createFile(file, extension = 'jpg'): Promise<string> {
         try {
             const fileName = uuid.v4() + '.' + extension;
-            const directory = path.resolve(__dirname, '..', '..', 'static');  //  cd ../../static
-            const filePath = path.join(directory, fileName);
+            const filePath = path.join(this.staticDirectory, fileName);
             
-            this.ensureDirectory(directory);
+            this.ensureDirectory(this.staticDirectory);
             fs.writeFileSync(filePath, file.buffer);
 
             return fileName;
@@ -21,15 +20,18 @@ export class FileService {
         }
     }
 
-    ensureDirectory(direcory: string) {
+    private ensureDirectory(direcory: string) {
         if (!fs.existsSync(direcory)) {
             fs.mkdirSync(direcory, { recursive: true })
         }
     }
 
     deleteFile(fileName: string) {
-        console.log(`Deleteing ${fileName}`);
-        const filePath = path.resolve(__dirname, '..', '..', 'static', fileName);
+        const filePath = path.resolve(this.staticDirectory, fileName);
         fs.unlinkSync(filePath);
+    }
+
+    private get staticDirectory() {
+        return path.resolve(__dirname, '..', '..', 'static');
     }
 }

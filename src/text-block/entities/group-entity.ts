@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { IsInt, IsPositive, IsString, Length } from 'class-validator';
 import { TextBlock } from "./text-block-entity";
 
@@ -21,9 +21,6 @@ export class Group {
     @OneToMany(
         () => TextBlock,
         (block) => block.group,
-        {
-            eager: true,
-        }
     )
     blocks: TextBlock[];
 }
