@@ -19,15 +19,14 @@ export class TextBlockService {
     ) { }
     
     async create(dto: CreateTextBlockDTO, file) {
-        console.log(dto);
-        const fileName = await this.fileService.createFile(file);
-        console.log(`Created file ${fileName}`);
+        const image = this.fileService.generateName('jpg');
         const group = await this.groupService.ensureGroup(dto.groupName);
-        const textBlock = this.textBlockRepository.create({ title: dto.title, text: dto.text, image: fileName });
+        const textBlock = this.textBlockRepository.create({ title: dto.title, text: dto.text, image });
 
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
+
         try {
             if (!group.id) {
                 console.log('Групппа не существовала. создаем');
@@ -36,11 +35,15 @@ export class TextBlockService {
             textBlock.group = group;
             await queryRunner.manager.save(textBlock);
 
+            const record = await this.fileService.createFileAndRecord(textBlock.id, 'TextBlock', file, 'jpg');
+
+            await queryRunner.manager.save(record);
+
             await queryRunner.commitTransaction();
             return textBlock;
         } catch (e) {
             await queryRunner.rollbackTransaction();
-            this.fileService.deleteFile(fileName);
+            this.fileService.deleteFile(image);
             throw new HttpException('Не удалось сохранить', HttpStatus.BAD_REQUEST);
         } finally {
             await queryRunner.release();
@@ -66,6 +69,7 @@ export class TextBlockService {
 
     async update(id: number, dto: UpdateTextBlockDTO, image) {
 
+
         let block = await this.findById(id);
 
         if (!block) {
@@ -89,7 +93,9 @@ export class TextBlockService {
             let oldImage: string;
             if (image) {
                 oldImage = block.image;
-                block.image = await this.fileService.createFile(image);
+                block.image = this.fileService.generateName();
+                const fileRecord = await this.fileService.createFileAndRecord(block.id, 'TextBlock', image, block.image);
+                await queryRunner.manager.save(fileRecord);
             }
 
             block = await queryRunner.manager.save(block);

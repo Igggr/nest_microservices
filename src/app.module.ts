@@ -15,6 +15,7 @@ import { FileModule } from './file/file.module';
 import { TextBlockModule } from './text-block/text-block.module';
 import { Group } from './text-block/entities/group-entity';
 import { TextBlock } from './text-block/entities/text-block-entity';
+import { FileRecord } from './file/entities/file-entity';
 
 
 @Module({
@@ -50,10 +51,11 @@ import { TextBlock } from './text-block/entities/text-block-entity';
     }),
     UserModule,
     ProfileModule,
-    AuthModule.forRoot(process.env.JWT_SECRET),
+    AuthModule.forRoot(process.env.JWT_SECRET), // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
     RolesModule,
     FileModule,
-    TextBlockModule,  // надо как-то передать в модуль secret. process.env.JWT_SECRET в модуле не видело :(
+    TextBlockModule,
+    FileRecord,
   ],
   controllers: [],
   providers: [JwtService],
