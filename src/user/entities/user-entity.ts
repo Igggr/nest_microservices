@@ -4,27 +4,32 @@ import * as bcrypt from 'bcrypt';
 import { ApiProperty } from "@nestjs/swagger";
 import { UserRole } from "src/roles/entities/user-role-entity";
 import { Length, IsEmail, IsString, IsInt, IsPositive } from 'class-validator';
+import { Type } from "class-transformer";
 
 
 @Entity()
 export class User {
+    @Type(() => Number)
     @IsInt()
     @IsPositive()
     @ApiProperty({description: 'Primary key', example: 1})
     @PrimaryGeneratedColumn()
     id: Number;
 
+    @Type(() => String)
     @IsString()
     @Length(3, 20)
     @ApiProperty({ description: "login", example: 'John43' })
     @Column({ type: String })
     login: string;
 
+    @Type(() => String)
     @IsEmail()
     @ApiProperty({description: 'email', example: 'johndoe@mail.com'})
     @Column({ type: String })
     email: string;
 
+    @Type(() => String)
     @IsString()
     @Length(6, 60)
     @ApiProperty({description: 'пароль', example: '123qwerty'})
