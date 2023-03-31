@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { ApiProperty } from "@nestjs/swagger";
 import { UserRole } from "src/roles/entities/user-role-entity";
 import { Length, IsEmail, IsString, IsInt, IsPositive } from 'class-validator';
-import { Type } from "class-transformer";
+import { Exclude, instanceToPlain, Type } from "class-transformer";
 
 
 @Entity()
@@ -32,7 +32,12 @@ export class User {
     @Type(() => String)
     @IsString()
     @Length(6, 60)
-    @ApiProperty({description: 'пароль', example: '123qwerty'})
+    @ApiProperty({
+        description: 'пароль',
+        example: '123qwerty',
+        writeOnly: true, // содержится в запросах, но не в ответах
+    })
+    @Exclude()
     @Column({ type: String })
     password: string;
 
@@ -54,7 +59,11 @@ export class User {
         () => UserRole,
         (userRole) => userRole.grantedBy,
     )
-    creatures: UserRole[];  // кому это он банхамер доверил?     
+    creatures: UserRole[];  // кому это он банхамер доверил?
+
+
+    // вместе с @Exclude на колнке пароля достаточно, чтобы не возвращать пароли в ответе
+    toJSON() { return instanceToPlain(this); }
 
     async setPassword(password: string, hash: number = 10) {
         this.password = await bcrypt.hash(password, hash);
