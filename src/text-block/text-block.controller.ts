@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateTextBlockDTO } from './dtos/create-text-block.dto';
 import { TextBlockService } from './services/text-block/text-block.service';
@@ -17,12 +17,12 @@ export class TextBlockController {
     constructor(
         private readonly textBlockService: TextBlockService,
     ) { }
-    
+
     @UseGuards(RoleGuard)
     @Roles(ADMIN)
     @UseInterceptors(FileInterceptor('image'))
     @ApiOperation({ summary: 'Создание нового текстового блока' })
-    @ApiResponse({status: 200, type: TextBlock})
+    @ApiResponse({ status: 200, type: TextBlock })
     @Post('/')
     async create(
         @Body() dto: CreateTextBlockDTO,
@@ -30,7 +30,7 @@ export class TextBlockController {
     ) {
         return await this.textBlockService.create(dto, image);
     }
-    
+
     @ApiQuery({
         name: "group",
         type: String,
@@ -38,14 +38,20 @@ export class TextBlockController {
         required: false
     })
     @ApiOperation({ summary: 'Получение тестовых блоков' })
-    @ApiResponse({ status: 200, type: [TextBlock]})
+    @ApiResponse({ status: 200, type: [TextBlock] })
     @Get('/')
     getGroup(@Query('group') group: string) {
         return this.textBlockService.find(group);
     }
 
+    @ApiParam({
+        name: 'id',
+        required: true,
+        description: 'id текстового блока. должно существовать в БД',
+        type: Number
+    })
     @ApiOperation({ summary: 'Получение конкретного текстового блока' })
-    @ApiResponse({status: 200, type: TextBlock})
+    @ApiResponse({ status: 200, type: TextBlock })
     @Get('/:id')
     getOne(@Param('id', ParseIntPipe) id: number) {
         return this.textBlockService.findById(id);
@@ -54,8 +60,14 @@ export class TextBlockController {
     @UseGuards(RoleGuard)
     @Roles(ADMIN)
     @UseInterceptors(FileInterceptor('image'))
+    @ApiParam({
+        name: 'id',
+        required: true,
+        description: 'id текстового блока. должно существовать в БД',
+        type: Number
+    })
     @ApiOperation({ summary: 'Обновление конкретного текстового блока' })
-    @ApiResponse({status: 200, type: TextBlock})
+    @ApiResponse({ status: 200, type: TextBlock })
     @Patch('/:id')
     async update(
         @Param('id', ParseIntPipe) id: number,
@@ -64,9 +76,15 @@ export class TextBlockController {
     ) {
         return await this.textBlockService.update(id, dto, image);
     }
-    
+
     @UseGuards(RoleGuard)
     @Roles(ADMIN)
+    @ApiParam({
+        name: 'id',
+        required: true,
+        description: 'id текстового блока. должно существовать в БД',
+        type: Number
+    })
     @ApiOperation({ summary: 'Удаление конкретного текстового блока' })
     @ApiResponse({ status: 200, type: DeleteResult })
     @Delete('/:id')

@@ -41,6 +41,10 @@ export class User {
     @Column({ type: String })
     password: string;
 
+    @ApiProperty({
+        description: 'Профиль пользователя',
+        type: Profile,
+    })
     @OneToOne(
         () => Profile,
         (profile) => profile.user,
@@ -48,6 +52,10 @@ export class User {
     )
     profile: Profile;
 
+    @ApiProperty({
+        description: 'Роли пользователя',
+        type: UserRole,
+    })
     @OneToMany(
         () => UserRole,
         (userRole) => userRole.user,

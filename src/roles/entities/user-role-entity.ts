@@ -29,6 +29,9 @@ export class UserRole {
     )
     user: User;
 
+    @ApiProperty({
+        description: 'Роль'
+    })
     @ManyToOne(
         () => Role,
         (role) => role.userRoles,
@@ -40,6 +43,7 @@ export class UserRole {
     )
     role: Role;
 
+    @ApiProperty({description: 'Когда эту роль присвоили'})
     @Type(() => Date)
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     grantedAt: Date;

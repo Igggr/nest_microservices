@@ -1,11 +1,14 @@
-import { Body, Controller, Post, Get } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ProfileService } from 'src/profile/profile.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login-dto';
 import { RegisterDTO } from './dtos/register-dto';
 
 class Token {
+    @ApiProperty({
+        description: 'Jwt-токен',
+        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlZhbkBtYWlsLmNvbSIsImlkIjoxLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iXSwiaWF0IjoxNjgwMjY0MzI1LCJleHAiOjE2ODAzNTA3MjV9.i8AScsAy3CC0KzfAKV-GF5hiQwBgftHjx8lGxWmCy7w'
+    })
     token: string;
 };
 

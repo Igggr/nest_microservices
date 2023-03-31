@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { Roles } from 'src/auth/guards/role-guard/role-checker';
 import { SameUserOrHasRoleGuard } from 'src/auth/guards/role-guard/same-user-or-has-role.guard';
 import { ADMIN } from 'src/roles/roles';
@@ -15,7 +15,7 @@ export class UserController {
     ) { }
     
     @ApiOperation({ summary: 'Получи всех пользователей' })
-    @ApiResponse({ status: 200, type: [User]})
+    @ApiResponse({ status: 200, type: [User] })
     @Get('')
     getAllUserrs() {
         return this.userService.findAll();
@@ -23,6 +23,12 @@ export class UserController {
     
     @Roles(ADMIN)
     @UseGuards(SameUserOrHasRoleGuard)
+    @ApiParam({
+        name: 'id',
+        required: true,
+        description: 'id пользователя. должно существовать в БД',
+        type: Number
+    })
     @ApiOperation({ summary: 'Удали пользователя' })
     @ApiResponse({ status: 200, type: DeleteResult })
     @Delete('/:id')
