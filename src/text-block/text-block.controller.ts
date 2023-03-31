@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateTextBlockDTO } from './dtos/create-text-block.dto';
 import { TextBlockService } from './services/text-block/text-block.service';
@@ -9,6 +9,7 @@ import { UpdateTextBlockDTO } from './dtos/update-text-block.dto';
 import { RoleGuard } from 'src/auth/guards/role-guard/role.guard';
 import { ADMIN } from 'src/roles/roles';
 import { Roles } from 'src/auth/guards/role-guard/role-checker';
+import { BearerAuth } from 'src/docs';
 
 
 @ApiTags('Текстовый блок')
@@ -18,9 +19,10 @@ export class TextBlockController {
         private readonly textBlockService: TextBlockService,
     ) { }
 
+    @UseInterceptors(FileInterceptor('image'))
     @UseGuards(RoleGuard)
     @Roles(ADMIN)
-    @UseInterceptors(FileInterceptor('image'))
+    @ApiBearerAuth(BearerAuth)
     @ApiOperation({ summary: 'Создание нового текстового блока' })
     @ApiResponse({ status: 200, type: TextBlock })
     @Post('/')
@@ -57,9 +59,10 @@ export class TextBlockController {
         return this.textBlockService.findById(id);
     }
 
+    @UseInterceptors(FileInterceptor('image'))
     @UseGuards(RoleGuard)
     @Roles(ADMIN)
-    @UseInterceptors(FileInterceptor('image'))
+    @ApiBearerAuth(BearerAuth)
     @ApiParam({
         name: 'id',
         required: true,
@@ -79,6 +82,7 @@ export class TextBlockController {
 
     @UseGuards(RoleGuard)
     @Roles(ADMIN)
+    @ApiBearerAuth(BearerAuth)
     @ApiParam({
         name: 'id',
         required: true,
