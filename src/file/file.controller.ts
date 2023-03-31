@@ -11,6 +11,6 @@ export class FileController {
     
     @Get('')
     async getAll() {
-        return this.fileService.foo();
+        return this.fileService.join();
     }
 }

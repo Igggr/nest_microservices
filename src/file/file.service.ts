@@ -14,11 +14,27 @@ export class FileService {
         private readonly fileRecord: Repository<FileRecord>,
     ) { }
     
-    async foo() {
-        return this.fileRecord
-            .createQueryBuilder('file')
-            .innerJoinAndSelect('file.essenceId', 'file.essenceTable.id')
-            .getMany();
+    // все таблицы обязаны иметь одну и ту же колонку длч хранения имени файла - image
+    async join() {
+        const tables = await this.fileRecord.createQueryBuilder('file')
+            .select('file.essenceTable name')
+            .distinct()
+            .getRawMany();
+        
+        console.log(tables);
+    
+        const union = tables
+            .map((table) => table.name)
+            .map((tableName) =>
+                this.fileRecord
+                    .createQueryBuilder('file')
+                    .leftJoinAndSelect(tableName, "table", "table.id = file.essenceId")
+                    .where('file.essenceTable = :tableName', { tableName })
+                    .select(['file.essenceTable as refTable', 'table.id as refId', 'file.createdAt createdAt', 'table.image image'])
+                    .getRawMany()
+        );
+
+        return (await Promise.all(union)).flatMap((rows) => rows);
     }
     
     async createFileAndRecord(id: number, tableName: string, file, fileName: string) {
