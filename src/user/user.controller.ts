@@ -22,7 +22,7 @@ export class UserController {
         return this.userService.findAll();
     }
     
-    @Roles(ADMIN)
+    @Roles(ADMIN.value)
     @UseGuards(SameUserOrHasRoleGuard)
     @ApiBearerAuth(BearerAuth)
     @ApiParam({

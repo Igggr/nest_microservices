@@ -16,4 +16,8 @@ export class FileRecord {
     @Column()
     essenceId: number;
 
+    // необходимо хранить эту информацию не только в таблице 'essenceTable' (например TextBlock) но и здесь. 
+    // Если из 'essenceTable' запись удалили - то как иначе мв определим к какому файлу относится запись в таблице FileRecord?
+    @Column()
+    filePath: string;
 }

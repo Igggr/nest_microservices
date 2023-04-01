@@ -21,7 +21,7 @@ export class TextBlockController {
 
     @UseInterceptors(FileInterceptor('image'))
     @UseGuards(RoleGuard)
-    @Roles(ADMIN)
+    @Roles(ADMIN.value)
     @ApiBearerAuth(BearerAuth)
     @ApiOperation({ summary: 'Создание нового текстового блока' })
     @ApiResponse({ status: 200, type: TextBlock })
@@ -61,7 +61,7 @@ export class TextBlockController {
 
     @UseInterceptors(FileInterceptor('image'))
     @UseGuards(RoleGuard)
-    @Roles(ADMIN)
+    @Roles(ADMIN.value)
     @ApiBearerAuth(BearerAuth)
     @ApiParam({
         name: 'id',
@@ -81,7 +81,7 @@ export class TextBlockController {
     }
 
     @UseGuards(RoleGuard)
-    @Roles(ADMIN)
+    @Roles(ADMIN.value)
     @ApiBearerAuth(BearerAuth)
     @ApiParam({
         name: 'id',

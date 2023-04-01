@@ -35,7 +35,7 @@ export class TextBlockService {
             textBlock.group = group;
             await queryRunner.manager.save(textBlock);
 
-            const record = await this.fileService.createFileAndRecord(textBlock.id, 'TextBlock', file, 'jpg');
+            const record = await this.fileService.createFileAndRecord(textBlock.id, 'TextBlock', file, image);
 
             await queryRunner.manager.save(record);
 
@@ -43,7 +43,7 @@ export class TextBlockService {
             return textBlock;
         } catch (e) {
             await queryRunner.rollbackTransaction();
-            this.fileService.deleteFile(image);
+            await this.fileService.deleteFile(image);
             throw new HttpException('Не удалось сохранить', HttpStatus.BAD_REQUEST);
         } finally {
             await queryRunner.release();
@@ -93,7 +93,7 @@ export class TextBlockService {
             let oldImage: string;
             if (image) {
                 oldImage = block.image;
-                block.image = this.fileService.generateName();
+                block.image = this.fileService.generateName('jpg');
                 const fileRecord = await this.fileService.createFileAndRecord(block.id, 'TextBlock', image, block.image);
                 await queryRunner.manager.save(fileRecord);
             }
@@ -102,7 +102,7 @@ export class TextBlockService {
             await queryRunner.commitTransaction();
 
             if (image) {
-                this.fileService.deleteFile(oldImage);
+                await this.fileService.deleteFile(oldImage);
                 console.log('Удалили старое изображение');
             }
             

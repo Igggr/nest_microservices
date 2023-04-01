@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user-entity';
 import { Equal, Repository } from 'typeorm';
 import { CreateRoleDTO } from './dtos/create-role-dto';
 import { Role } from './entities/role-entity';
 import { UserRole } from './entities/user-role-entity';
-import { USER } from './roles';
-export { USER, ADMIN } from './roles';
+import { USER, ADMIN } from './roles';
+
 
 @Injectable()
 export class RolesService {
@@ -18,20 +18,33 @@ export class RolesService {
     ) { }
     
     async create(dto: CreateRoleDTO) {
-        const role = this.roleRepository.create(dto);
-        await this.roleRepository.save(role);
+        const role = await this.findRoleByValue(dto.value);
+        if (role) {
+            throw new HttpException(`Роль c value = ${role.value} уже существует`, HttpStatus.CONFLICT)
+        }
+        const newRole = this.roleRepository.create(dto);
+        await this.roleRepository.save(newRole);
     }
 
     async findAll() {
         return await this.roleRepository.find();
     }
 
-    async ensureHasRoleForSimpleUser() {
-        let userRole = await this.roleRepository.findOne({ where: { value: Equal(USER) } });
+    findRoleByValue(value: string): Promise<Role> {
+        const role = this.roleRepository.findOne({
+            where: {
+                value: Equal(value),
+            }
+        })
+        return role;
+    }
+
+    async ensureHasRole(role = USER) {
+        let userRole = await this.findRoleByValue(role.value);
         if (userRole) {
             return userRole;
         }
-        userRole = this.roleRepository.create({ value: USER, description: 'Пользователь' });
+        userRole = this.roleRepository.create(role);
         return await this.roleRepository.save(userRole);
     }
 

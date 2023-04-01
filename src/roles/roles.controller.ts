@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ADMIN, RolesService } from './roles.service';
+import { RolesService } from './roles.service';
 import { CreateRoleDTO } from './dtos/create-role-dto';
 import { Role } from './entities/role-entity';
 import { RoleGuard } from 'src/auth/guards/role-guard/role.guard';
 import { Roles } from 'src/auth/guards/role-guard/role-checker';
 import { BearerAuth } from 'src/docs';
+import { ADMIN } from './roles';
 
 
 @ApiTags('Роли')
@@ -16,7 +17,7 @@ export class RolesController {
     ) { }
 
     @UseGuards(RoleGuard)
-    @Roles(ADMIN)
+    @Roles(ADMIN.value)
     @ApiBearerAuth(BearerAuth)
     @ApiOperation({ summary: 'Создай роль' })
     @ApiResponse({ status: 200, type: Role })
@@ -26,7 +27,7 @@ export class RolesController {
     }
 
     @UseGuards(RoleGuard)
-    @Roles(ADMIN)
+    @Roles(ADMIN.value)
     @ApiBearerAuth(BearerAuth)
     @ApiOperation({ summary: 'Получи все роли' })
     @ApiResponse({ status: 200, type: [Role] })

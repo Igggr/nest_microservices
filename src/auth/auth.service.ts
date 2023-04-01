@@ -7,6 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { DataSource } from 'typeorm';
 import { LoginDTO } from './dtos/login-dto';
 import { RegisterDTO } from './dtos/register-dto';
+import { USER, ADMIN } from '../roles/roles'
 
 
 @Injectable()
@@ -37,7 +38,7 @@ export class AuthService {
         let user: User;
         
         try {
-            const simpleUserRole = await this.roleService.ensureHasRoleForSimpleUser();
+            const simpleUserRole = await this.roleService.ensureHasRole(USER);
             user = await this.userService.create(dto.login, dto.email, dto.password);
             const userRole = this.roleService.assignRoleToUser(user, simpleUserRole)
             const profile = await this.profileService.create(dto.name, dto.surname, dto.phone);
