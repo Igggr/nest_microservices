@@ -47,7 +47,7 @@ import { FileRecord } from './file/entities/file-entity';
         TextBlock,
       ],
       autoLoadEntities: true,
-      synchronize: true,  // автоматические миграции
+      synchronize: process.env.NODE_ENV !== 'prod',  // автоматические миграции, в prode не применять
     }),
     UserModule,
     ProfileModule,

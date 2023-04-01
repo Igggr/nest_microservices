@@ -67,11 +67,15 @@ export class AuthService {
     }
 
     private async validateUser(dto: LoginDTO) {
-        const user = await this.userService.findByEmail(dto.email);
-        if (user && await user.checkPassword(dto.password)) {
-            return user;
+        try {
+            const user = await this.userService.findByEmail(dto.email);
+            if (user && await user.checkPassword(dto.password)) {
+                return user;
+            }
+            throw new UnauthorizedException({ message: 'Некорректный емайл или пароль' });
+        } catch (e) {
+            throw new UnauthorizedException({ message: 'Авторизация не удалась' });
         }
-        throw new UnauthorizedException({ message: 'Некорректный емайл или пароль' })
     }
 
 }
