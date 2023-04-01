@@ -7,6 +7,7 @@ import { Role } from './entities/role-entity';
 import { UserRole } from './entities/user-role-entity';
 import { USER, ADMIN } from './roles';
 import { UserService } from 'src/user/user.service';
+import { number } from 'joi';
 
 
 @Injectable()
@@ -25,7 +26,7 @@ export class RolesService {
             throw new HttpException(`Роль c value = ${role.value} уже существует`, HttpStatus.CONFLICT)
         }
         const newRole = this.roleRepository.create(dto);
-        await this.roleRepository.save(newRole);
+        return await this.roleRepository.save(newRole);
     }
 
     async findAll() {
@@ -74,5 +75,15 @@ export class RolesService {
         }
         const grantedBy = await this.userService.findById(promotedBy);
         return this.assignRoleToUser(user, role, grantedBy);
+    }
+
+    async delete(id: number) {
+        const role = await this.roleRepository.findOne({
+            where: { id: Equal(id) }
+        });
+        if (role) {
+            return await this.roleRepository.remove(role);
+        }
+        return 'Роль не найдена';
     }
 }

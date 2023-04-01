@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleDTO } from './dtos/create-role-dto';
@@ -8,6 +8,7 @@ import { Roles } from 'src/auth/guards/role-guard/role-checker';
 import { BearerAuth } from 'src/docs';
 import { ADMIN } from './roles';
 import { PromoteUserDTO } from './dtos/promote-user.dto';
+import { UserRole } from './entities/user-role-entity';
 
 
 @ApiTags('Роли')
@@ -48,7 +49,7 @@ export class RolesController {
         
     })
     @ApiOperation({ summary: 'Присвой пользователю роль' })
-    @ApiResponse({ status: 200, type: [Role] })
+    @ApiResponse({ status: 200, type: [UserRole] })
     @Post('/promote/:id')
     promote(
         @Param('id', ParseIntPipe) id: number,
@@ -56,6 +57,25 @@ export class RolesController {
         @Req() req
     ) {
         return this.roleService.promoteUser(id, dto.value, req.user.id);
+    }
+
+    @UseGuards(RoleGuard)
+    @Roles(ADMIN.value)
+    @ApiBearerAuth(BearerAuth)
+    @ApiParam({
+        name: 'id',
+        required: true,
+        description: 'id роли. Она должна существовать в БД',
+        type: Number
+
+    })
+    @ApiOperation({ summary: 'Удали роль' })
+    @ApiResponse({ status: 200, type: [Role] })
+    @Delete('/:id')
+    async delete(
+        @Param('id', ParseIntPipe) id: number,
+    ) {
+        return this.roleService.delete(id);
     }
 
 }
