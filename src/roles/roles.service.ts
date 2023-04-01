@@ -6,6 +6,7 @@ import { CreateRoleDTO } from './dtos/create-role-dto';
 import { Role } from './entities/role-entity';
 import { UserRole } from './entities/user-role-entity';
 import { USER, ADMIN } from './roles';
+import { UserService } from 'src/user/user.service';
 
 
 @Injectable()
@@ -15,6 +16,7 @@ export class RolesService {
         private readonly roleRepository: Repository<Role>,
         @InjectRepository(UserRole)
         private readonly userRoleRepository: Repository<UserRole>,
+        private readonly userService: UserService,
     ) { }
     
     async create(dto: CreateRoleDTO) {
@@ -30,8 +32,8 @@ export class RolesService {
         return await this.roleRepository.find();
     }
 
-    findRoleByValue(value: string): Promise<Role> {
-        const role = this.roleRepository.findOne({
+    async findRoleByValue(value: string): Promise<Role> {
+        const role = await this.roleRepository.findOne({
             where: {
                 value: Equal(value),
             }
@@ -49,15 +51,28 @@ export class RolesService {
     }
 
     // создай, но НЕ сохраняй
-    assignRoleToUser(user: User, role: Role, grantedBy?: User) {
+    async assignRoleToUser(user: User, role: Role, grantedBy?: User) {
 
-        const userRole = this.userRoleRepository.create();
-        userRole.role = role;
-        userRole.user = user;
+        const userRole = this.userRoleRepository.create({ user, role });
 
         if (grantedBy) {
             userRole.grantedBy = grantedBy;
         }
+
+        await this.userRoleRepository.save(userRole);
         return userRole;
+    }
+
+    async promoteUser(userId: number, roleName: string, promotedBy: number): Promise<UserRole> {
+        const role = await this.findRoleByValue(roleName);
+        if (!role) {
+            throw new HttpException(`Роли с value=${roleName} не существует, сначала создайте ее`, HttpStatus.BAD_REQUEST)
+        }
+        const user = await this.userService.findById(userId);
+        if (!user) {
+            throw new HttpException(`Пользователя с id=${userId} не существует`, HttpStatus.BAD_REQUEST)
+        }
+        const grantedBy = await this.userService.findById(promotedBy);
+        return this.assignRoleToUser(user, role, grantedBy);
     }
 }

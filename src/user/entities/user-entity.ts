@@ -14,7 +14,7 @@ export class User {
     @IsPositive()
     @ApiProperty({description: 'Primary key', example: 1})
     @PrimaryGeneratedColumn()
-    id: Number;
+    id: number;
 
     @Type(() => String)
     @IsString()

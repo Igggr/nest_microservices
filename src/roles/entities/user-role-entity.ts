@@ -54,7 +54,7 @@ export class UserRole {
         (user) => user.creatures,
         {
             cascade: true,
-            onDelete: 'CASCADE',
+            onDelete: 'SET NULL',
          }
     )
     grantedBy: User;  // кто доверил ему банхамер?
