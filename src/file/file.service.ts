@@ -4,7 +4,7 @@ import * as uuid from 'uuid';
 import * as path from 'path';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileRecord } from './entities/file-entity';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, In, Repository } from 'typeorm';
 
 
 @Injectable()
@@ -22,6 +22,13 @@ export class FileService {
         return tables.map((table) => table.name);
     }
 
+    private absoluteTime(): Date {
+        const time = new Date();
+        const hourseOffset = time.getTimezoneOffset() / 60;
+        time.setHours(time.getHours() - 1 + hourseOffset);
+        return time;
+    }
+
     // следуя заданию - удалени ненужных файлов должно быть таким.
     // Я однако считаю задание некорекктным, озможна ситация, когда
     // 1) в essenceTable / essenceId заполнены, но соответсвующей им строки (essenceTable.id = essenceId) не существует
@@ -30,9 +37,12 @@ export class FileService {
     //
     // поэому в дополнение написан метод removeOtherTrash
     async removeOrphanRecords() {
+        // кривовато. Но подружить DATE_DIFF с TYpeORM пока не удалось 
+        const time = this.absoluteTime();  
+        
         const records = await this.fileRecord
             .createQueryBuilder('record')
-            // .where('datediff(record.createdAt, now()) >= 1')   // прошло больше час с момента создания
+            .where('record.createdAt < :hour_ago', {hour_ago: time})   // прошло больше час с момента создания
             .andWhere(
                 new Brackets((qb) =>
                     qb.where('record.essenceTable IS null')    // а при этом связей ни с кем нет
@@ -52,19 +62,17 @@ export class FileService {
 
         const removeRows = rows
             .filter((row) => (
-                row.refId === null   // essenceId === null or essenceTable === nul or в esssenceTable просто нет строки с id = essnceId 
-                || row.recordfilePath !== row.refFilePath  // данные не консистентны
-            ));
-        
-        const filesRemoval = removeRows.map((row) => this.deleteFile(row.recordfilePath));
-        await Promise.all(filesRemoval);
+                // essenceId === null or essenceTable === nul or в esssenceTable просто нет строки с id = essnceId
+                row.ref_id === null    
 
-        removeRows.map((row) =>
-            this.fileRecord.createQueryBuilder('file')
-                    .where('file.id - :id', { id: row.id })
-                    .delete()
-            );
-        
+                // данные не консистентныa. Хотя черт знает - может в этом случае стоит переписать одно значени другим?
+                || row.record_file_path !== row.ref_file_path  
+            ));
+
+        const filesRemoval = removeRows.map((row) => this.deleteFile(row.record_file_path));
+        await Promise.all(filesRemoval);
+       
+        this.fileRecord.delete({id: In(removeRows.map((row) => row.id)) })        
     }
 
 
@@ -80,11 +88,11 @@ export class FileService {
                     .where('file.essenceTable = :tableName', { tableName })
                     .select([
                         'file.id as id',
-                        'file.essenceTable as refTable',
-                        'table.id as refId',
-                        'file.createdAt as createdAt',
-                        'file.filePath as recordfilePath',
-                        'table.image as refFilePath',
+                        'file.essenceTable as ref_table',
+                        'table.id as ref_id',
+                        'file.createdAt as created_at',
+                        'file.filePath as record_file_path',
+                        'table.image as ref_file_path',
                     ]).getRawMany()
             );
         

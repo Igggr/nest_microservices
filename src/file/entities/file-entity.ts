@@ -6,14 +6,14 @@ export class FileRecord {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+    @CreateDateColumn({ type: "timestamptz", default: () => "NOW()" })
     createdAt: Date;
 
     // жалко, что нет чего-нибудь типа "системы типов содержимого Django"
-    @Column()
+    @Column({ nullable: true })
     essenceTable: string;
 
-    @Column()
+    @Column({ nullable: true })
     essenceId: number;
 
     // необходимо хранить эту информацию не только в таблице 'essenceTable' (например TextBlock) но и здесь. 
