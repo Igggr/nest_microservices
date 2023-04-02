@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Equal, Repository } from 'typeorm';
 import { User } from './entities/user-entity';
-import { RegisterDTO } from 'src/auth/dtos/register-dto';
+import { UpdateUserDTO } from './dtos.ts/update-user-dto';
 
 @Injectable()
 export class UserService {
@@ -38,7 +38,7 @@ export class UserService {
         return user;
     }
 
-    async update(id: number, dto: RegisterDTO) {
+    async update(id: number, dto: UpdateUserDTO) {
         const user = await this.findById(id);
         if (!user) {
             throw new HttpException(`Пользователя с id = ${id} не существует`, HttpStatus.BAD_REQUEST);
@@ -62,6 +62,8 @@ export class UserService {
                 await queryRunner.manager.save(profile);
             }
             const updatedUser = await queryRunner.manager.save(user);
+            await queryRunner.commitTransaction();
+
             return updatedUser;
         } catch (e) {
             await queryRunner.rollbackTransaction();

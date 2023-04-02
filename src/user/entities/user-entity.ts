@@ -37,7 +37,6 @@ export class User {
         example: '123qwerty',
         writeOnly: true, // содержится в запросах, но не в ответах
     })
-    @Exclude()
     @Column({ type: String })
     password: string;
 
@@ -71,7 +70,11 @@ export class User {
 
 
     // вместе с @Exclude на колнке пароля достаточно, чтобы не возвращать пароли в ответе
-    toJSON() { return instanceToPlain(this); }
+    toJSON() {
+        const record = instanceToPlain(this);
+        delete record.password;
+        return record;
+    }
 
     async setPassword(password: string, hash: number = 10) {
         this.password = await bcrypt.hash(password, hash);

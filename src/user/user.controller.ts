@@ -7,7 +7,7 @@ import { ADMIN } from 'src/roles/roles';
 import { DeleteResult } from 'typeorm';
 import { User } from './entities/user-entity';
 import { UserService } from './user.service';
-import { RegisterDTO } from 'src/auth/dtos/register-dto';
+import { UpdateUserDTO } from './dtos.ts/update-user-dto';
 
 @ApiTags('Пользователи')
 @Controller('user')
@@ -52,7 +52,7 @@ export class UserController {
     @Patch('/:id')
     update(
         @Param('id', ParseIntPipe) id: number,
-        @Body() dto: RegisterDTO
+        @Body() dto: UpdateUserDTO,
     ) {
         return this.userService.update(id, dto);
 
