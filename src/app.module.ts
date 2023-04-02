@@ -16,6 +16,8 @@ import { TextBlockModule } from './text-block/text-block.module';
 import { Group } from './text-block/entities/group-entity';
 import { TextBlock } from './text-block/entities/text-block-entity';
 import { FileRecord } from './file/entities/file-entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 
 @Module({
@@ -48,6 +50,9 @@ import { FileRecord } from './file/entities/file-entity';
       ],
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'prod',  // автоматические миграции, в prode не применять
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', 'static'),
     }),
     UserModule,
     ProfileModule,

@@ -45,7 +45,7 @@ export class FileService {
         const removeFiles = records.map((record) => this.deleteFile(record.filePath));
         await Promise.all(removeFiles);
         
-        await this.fileRecord.remove(records);
+        return await this.fileRecord.remove(records);
     }
 
     // Как мне кажется надо удалять файлы - 
@@ -68,7 +68,7 @@ export class FileService {
         const filesRemoval = removeRows.map((row) => this.deleteFile(row.record_file_path));
         await Promise.all(filesRemoval);
        
-        this.fileRecord.delete({id: In(removeRows.map((row) => row.id)) })        
+        return this.fileRecord.delete({id: In(removeRows.map((row) => row.id)) })        
     }
 
 
