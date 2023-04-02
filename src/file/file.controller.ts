@@ -1,8 +1,12 @@
-import { Controller, Delete, Get } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Delete, Get, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileService } from './file.service';
+import { Roles } from 'src/auth/guards/role-guard/role-checker';
+import { ADMIN } from 'src/roles/roles';
+import { RoleGuard } from 'src/auth/guards/role-guard/role.guard';
+import { BearerAuth } from 'src/docs';
 
-@ApiTags('file')
+@ApiTags('Работа с файлами')
 @Controller('file')
 export class FileController {
     constructor(
@@ -17,11 +21,26 @@ export class FileController {
         return this.fileService.join();
     }
 
+    @UseGuards(RoleGuard)
+    @Roles(ADMIN.value)
+    @ApiBearerAuth(BearerAuth)
+    @ApiOperation({
+        summary: 'Удаление лишних файлов так, как оно описано в задании - \
+        essenceId/essenceTable пустые + прошло больше часа с момента создания'
+    })
     @Delete('')
     async removeOrphan() {
         await this.fileService.removeOrphanRecords();
     }
 
+    @UseGuards(RoleGuard)
+    @Roles(ADMIN.value)
+    @ApiBearerAuth(BearerAuth)
+    @ApiOperation({
+        summary: 'Удаление лишних файлов так, как мне кажется это надо делать - \
+        essenceId/essenceTable пустые OR в essenceTable нет строки с id = essenceId \
+        OR в этой строке хранится не такой путь'
+    })
     @Delete('/other-trash')
     async removeOtherTrash() {
         return await this.fileService.removeOtherTrash();

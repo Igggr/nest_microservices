@@ -22,13 +22,6 @@ export class FileService {
         return tables.map((table) => table.name);
     }
 
-    private absoluteTime(): Date {
-        const time = new Date();
-        const hourseOffset = time.getTimezoneOffset() / 60;
-        time.setHours(time.getHours() - 1 + hourseOffset);
-        return time;
-    }
-
     // следуя заданию - удалени ненужных файлов должно быть таким.
     // Я однако считаю задание некорекктным, озможна ситация, когда
     // 1) в essenceTable / essenceId заполнены, но соответсвующей им строки (essenceTable.id = essenceId) не существует
@@ -37,12 +30,10 @@ export class FileService {
     //
     // поэому в дополнение написан метод removeOtherTrash
     async removeOrphanRecords() {
-        // кривовато. Но подружить DATE_DIFF с TYpeORM пока не удалось 
-        const time = this.absoluteTime();  
-        
+        // кривовато. Но подружить DATE_DIFF с TYpeORM пока не удалось         
         const records = await this.fileRecord
             .createQueryBuilder('record')
-            .where('record.createdAt < :hour_ago', {hour_ago: time})   // прошло больше час с момента создания
+            .where("record.createdAt + interval '1' hour < NOW()")   // прошло больше час с момента создания
             .andWhere(
                 new Brackets((qb) =>
                     qb.where('record.essenceTable IS null')    // а при этом связей ни с кем нет
@@ -57,6 +48,11 @@ export class FileService {
         await this.fileRecord.remove(records);
     }
 
+    // Как мне кажется надо удалять файлы - 
+    // 1) essenceTable IS null
+    // 2) essenceId Is null
+    // 3) в essenceTable нет строки с id = essenceID
+    // 4) такая строка есть, но имя файла там храниться другое
     async removeOtherTrash() {
         const rows = await this.join();
 
@@ -90,7 +86,7 @@ export class FileService {
                         'file.id as id',
                         'file.essenceTable as ref_table',
                         'table.id as ref_id',
-                        'file.createdAt as created_at',
+                        'file.createdAt as createdAt',
                         'file.filePath as record_file_path',
                         'table.image as ref_file_path',
                     ]).getRawMany()
