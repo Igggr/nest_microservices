@@ -3,7 +3,6 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ProfileModule } from 'src/profile/profile.module';
 import { RolesModule } from 'src/roles/roles.module';
 import { UserModule } from 'src/user/user.module';
-import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 
@@ -12,11 +11,9 @@ export class AuthModule {
 
   static forRoot(secret: string): DynamicModule {
     return {
-      controllers: [AuthController],
+      controllers: [],
       imports: [
-        ProfileModule,
         UserModule,
-        RolesModule,
         JwtModule.register({
           secret,
           signOptions: {
@@ -25,6 +22,9 @@ export class AuthModule {
         })
       ],
       providers: [
+        AuthService,
+      ],
+      exports: [
         AuthService,
       ],
       module: AuthModule

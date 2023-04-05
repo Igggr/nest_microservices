@@ -52,9 +52,9 @@ export class RolesService {
     }
 
     // создай, но НЕ сохраняй
-    async assignRoleToUser(user: User, role: Role, grantedBy?: User) {
+    async assignRoleToUser(userId: number, role: Role, grantedBy?: User) {
 
-        const userRole = this.userRoleRepository.create({ user, role });
+        const userRole = this.userRoleRepository.create({ userId, role });
 
         if (grantedBy) {
             userRole.grantedBy = grantedBy;
@@ -74,7 +74,7 @@ export class RolesService {
             throw new HttpException(`Пользователя с id=${userId} не существует`, HttpStatus.BAD_REQUEST)
         }
         const grantedBy = await this.userService.findById(promotedBy);
-        return this.assignRoleToUser(user, role, grantedBy);
+        return this.assignRoleToUser(userId, role, grantedBy);
     }
 
     async delete(id: number) {

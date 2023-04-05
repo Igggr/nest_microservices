@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Equal, Repository } from 'typeorm';
 import { User } from './entities/user-entity';
 import { UpdateUserDTO } from './dtos.ts/update-user-dto';
+import { CreateUserDTO } from 'src/auth/dtos/register-dto';
 
 @Injectable()
 export class UserService {
@@ -31,11 +32,10 @@ export class UserService {
         return await this.userRepository.find();
     }
 
-    // создай. но НЕ СОХРАНЯЙ
-    async create(login: string, email: string, password: string) {
-        const user = this.userRepository.create({ login, email });
-        await user.setPassword(password);
-        return user;
+    async createAndSave(dto: CreateUserDTO): Promise<User> {
+        const user = this.userRepository.create({ login: dto.login, email: dto.email });
+        await user.setPassword(dto.password);
+        return await this.userRepository.save(user)
     }
 
     async update(id: number, dto: UpdateUserDTO) {
@@ -83,7 +83,7 @@ export class UserService {
         const userRoles = (await this.userRepository.findOne(
             {
                 where: { id: Equal(user.id) },
-                relations: { userRoles: true } // нужен еще один запрос в БДб чтобы добраться до ролей
+                relations: { userRoles: true } // нужен еще один запрос в БД, чтобы добраться до ролей
             })
         ).userRoles;
         const roles = userRoles?.map((ur) => ur.role.value) ?? [];

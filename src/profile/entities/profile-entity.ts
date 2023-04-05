@@ -33,6 +33,10 @@ export class Profile {
     @Column({ type: String })
     phone: string;
 
+    @Type(() => Number)
+    @Column({ type: Number })
+    userId: number;
+    
     @JoinColumn() 
     @OneToOne(
         () => User,
